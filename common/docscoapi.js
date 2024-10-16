@@ -606,6 +606,7 @@
     // Индекс, с которого мы начинаем сохранять изменения
     this.deleteIndex = 0;
     // Массив изменений
+    // 变更数组 这时候拿到的也是密文
     this.arrayChanges = null;
     // Время последнего сохранения (для разрыва соединения)
     this.lastOtherSaveTime = -1;
@@ -778,15 +779,18 @@
   DocsCoApi.prototype.askSaveChanges = function(callback) {
     if (this._saveCallback[this._saveCallback.length - 1]) {
       // Мы еще не отработали старый callback и ждем ответа
+      // 我们还没有处理旧的回调，并在等待响应
       return;
     }
 
     // Очищаем предыдущий таймер
+    // 清除之前的定时器
     if (null !== this.saveLockCallbackErrorTimeOutId) {
       clearTimeout(this.saveLockCallbackErrorTimeOutId);
     }
 
     // Проверим состояние, если мы не подсоединились, то сразу отправим ошибку
+    // 检查状态，如果我们还没有连接，就立即发送错误
     if (ConnectionState.Authorized !== this._state) {
       this.saveLockCallbackErrorTimeOutId = window.setTimeout(function() {
         if (callback) {
@@ -841,6 +845,7 @@
   };
 
   DocsCoApi.prototype.saveChanges = function(arrayChanges, currentIndex, deleteIndex, excelAdditionalInfo, reSave) {
+    console.log("axing DocsCoApi.prototype.saveChanges",arrayChanges, currentIndex, deleteIndex, excelAdditionalInfo, reSave);
     if (null === currentIndex) {
       this.deleteIndex = deleteIndex;
       if (null != this.deleteIndex && -1 !== this.deleteIndex) {
@@ -995,6 +1000,7 @@
   };
 
   DocsCoApi.prototype._send = function(data, useEncryption) {
+    (data["type"] == "saveChanges") && console.log("axing DocsCoApi.prototype._send saveChanges", data)
     if (!useEncryption && data && data["type"] == "saveChanges" && AscCommon.EncryptionWorker && AscCommon.EncryptionWorker.isInit())
       return AscCommon.EncryptionWorker.sendChanges(this, data, AscCommon.EncryptionMessageType.Encrypt);
 
@@ -1095,6 +1101,7 @@
 	};
 	DocsCoApi.prototype._onForceSave = function(data) {
         var type = data['type'];
+        console.log("axing _onForceSave", data)
 		if (c_oAscForceSaveTypes.Button === type) {
 			if (this._lastForceSaveButtonTime == data['time']) {
 				this.onForceSave({type: type, success: data['success']});
@@ -1590,6 +1597,7 @@
       }
 
       // Применения изменений пользователя
+      // 应用用户的更改
       if (window['AscApplyChanges'] && window['AscChanges']) {
         var userOfflineChanges = window['AscChanges'], changeOneUser;
         for (var i = 0; i < userOfflineChanges.length; ++i) {

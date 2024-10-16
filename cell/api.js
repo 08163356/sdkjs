@@ -108,6 +108,7 @@ var editor;
     this.collaborativeEditing = null;
 
     // AutoSave
+      // 快速自动保存的间隔（当设置了实时标志时） - 30 毫秒。
     this.autoSaveGapRealTime = 30;	  // Интервал быстрого автосохранения (когда выставлен флаг realtime) - 30 мс.
 
     // Shapes
@@ -1674,6 +1675,7 @@ var editor;
 	};
 
   // Посылает эвент о том, что обновились листы
+  //   发送事件，表示工作表已更新
   spreadsheet_api.prototype.sheetsChanged = function() {
     this.handlers.trigger("asc_onSheetsChanged");
   };
@@ -2548,6 +2550,7 @@ var editor;
       // Изменений не было
       this.onDocumentContentReady();
     }
+      // 发送自己的更改（只是删除其他人的锁定，因为没有自己的更改）
     // Пересылаем свои изменения (просто стираем чужие lock-и, т.к. своих изменений нет)
     this.collaborativeEditing.sendChanges();
   };
@@ -3378,6 +3381,7 @@ var editor;
 				t._unlockDocument();
 			}
 		};
+        // 发送自己的更改
 		// Пересылаем свои изменения
 		this.collaborativeEditing.sendChanges(this.IsUserSave, true);
 	};
@@ -6595,6 +6599,7 @@ var editor;
 				AscCommon.CollaborativeEditing.Clear_CollaborativeMarks();
 
 				// Принимаем чужие изменения
+                // 接受其他人的更改 .这下面都是并行编辑
 				this.collaborativeEditing.applyChanges();
 				// Пересылаем свои изменения (просто стираем чужие lock-и, т.к. своих изменений нет)
 				this.collaborativeEditing.sendChanges();

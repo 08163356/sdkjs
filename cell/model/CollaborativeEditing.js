@@ -68,7 +68,7 @@
 
 			this.m_arrNeedUnlock			= []; // Массив со списком залоченных объектов(которые были залочены другими пользователями)
 			this.m_arrNeedUnlock2			= []; // Массив со списком залоченных объектов(которые были залочены на данном клиенте)
-
+			// 其他用户的更改数组
 			this.m_arrChanges				= []; // Массив с изменениями других пользователей
 
 			this.m_oRecalcIndexColumns		= {};
@@ -269,17 +269,21 @@
 		};
 
 		CCollaborativeEditing.prototype.addChanges = function (oChanges) {
+			console.log("axing add changes", oChanges);
 			this.m_arrChanges.push(oChanges);
 		};
 
 		// Возвращает - нужно ли отправлять end action
+		// 返回：是否需要发送结束操作
 		CCollaborativeEditing.prototype.applyChanges = function (oColor) {
 			var t = this;
 			var length = this.m_arrChanges.length;
 			var oApi = Asc.editor;
 			// Принимаем изменения
+			// 接受更改
 			if (0 < length) {
 				//splice to prevent double apply other changes in case of load fonts
+				// 使用 splice 来防止在加载字体时重复应用其他更改
 				oApi.sendEvent("asc_onBeforeApplyChanges");
 				var changes = t.m_arrChanges.splice(0, length);
 				this.handlers.trigger("applyChanges", changes, function () {
@@ -295,6 +299,7 @@
 
 		CCollaborativeEditing.prototype.sendChanges = function (IsUserSave, isAfterAskSave) {
 			// Когда не совместное редактирование чистить ничего не нужно, но отправлять нужно.
+			// 当不是协同编辑时，不需要清理任何内容，但需要发送。
 			var bIsCollaborative = this.getCollaborativeEditing();
 
 			var bCheckRedraw = false, bRedrawGraphicObjects = false, bUnlockDefName = false;
@@ -359,7 +364,7 @@
 					}
 				}
 			}
-
+			// 将更改发送到服务器
 			// Отправляем на сервер изменения
 			this.handlers.trigger("sendChanges", this.getRecalcIndexSave(this.m_oRecalcIndexColumns), this.getRecalcIndexSave(this.m_oRecalcIndexRows), isAfterAskSave);
 

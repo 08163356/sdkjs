@@ -334,6 +334,7 @@
 
 		/**
 		 * Setups one or more strings to process on
+		 * 将一个或多个字符串设置为待处理的内容。
 		 * @param {String|Array} fragments  A simple string or array of formatted strings AscCommonExcel.Fragment
 		 * @param {AscCommonExcel.CellFlags} flags  Optional.
 		 * @return {StringRender}  Returns 'this' to allow chaining
@@ -358,6 +359,7 @@
 
 		/**
 		 * Применяем только трансформации поворота в области
+		 * 仅在该区域应用旋转变换。
 		 * @param {drawingCtx} drawingCtx
 		 * @param {type} angle Угол поворота в градусах
 		 * @param {Number} x

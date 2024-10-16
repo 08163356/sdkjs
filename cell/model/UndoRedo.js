@@ -58,6 +58,7 @@ function (window, undefined) {
 	}
 
 //главный обьект для пересылки изменений
+// 	用于传递更改的主要对象
 	function UndoRedoItemSerializable(oClass, nActionType, nSheetId, oRange, oData, LocalChange, bytes) {
 		this.oClass = oClass;
 		this.nActionType = nActionType;

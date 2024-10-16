@@ -27096,6 +27096,7 @@
 				range.setValueData(rangeStyle.cellValueData);
 			}
 		} else if (null != rangeStyle.val && specialPasteProps.val) {
+			// TODO：可能应该始终调用 setValueData，并根据 val 设置类型
 			//TODO возможно стоит всегда вызывать setValueData и тип выставлять в зависимости от val
 			if (rangeStyle.val[0] === "'") {
 				range.setValueData(new AscCommonExcel.UndoRedoData_CellValueData(null, new AscCommonExcel.CCellValue({

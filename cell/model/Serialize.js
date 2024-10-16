@@ -6275,6 +6275,8 @@
     function BinaryFileWriter(wb, isCopyPaste)
     {
         this.Memory = new AscCommon.CMemory();
+        console.log('axing BinaryFileWriter Memory.GetData() = '+this.Memory.GetData());
+        AscCommon.sendClientLog("debug", 'axing BinaryFileWriter Memory.GetData() = '+this.Memory.GetData());
         this.wb = wb;
         this.isCopyPaste = isCopyPaste;
         this.saveThreadedComments = true;

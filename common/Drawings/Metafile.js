@@ -689,6 +689,7 @@
 		}
 		this._doubleEncodeLE754 = function(v)
 		{
+			// 代码取自 jspack.js，基于小端 N 位 IEEE 754 浮点标准。
 			//код взят из jspack.js на основе стандарта Little-endian N-bit IEEE 754 floating point
 			var s, e, m, i, d, c, mLen, eLen, eBias, eMax;
 			var el = {len : 8, mLen : 52, rt : 0};
@@ -837,6 +838,7 @@
 				this.data[this.pos++] = (c >>> 8) & 0xFF;
 			}
 		}
+		//写入图像
 		this.WriteStringA = function(text)
 		{
 			var count = text.length;
@@ -870,6 +872,7 @@
 			}
 		}
 
+		// axing 大概率是xlsb和xlsx转换的地方
 		this.WriteUtf8Char = function(code)
 		{
 			this.CheckSize(6);
@@ -907,9 +910,11 @@
 				this.data[this.pos++] = (0x80 | (code & 0x3F));
 			}
 		};
-
+		// axing 大概率是xlsb和xlsx转换的地方,这地方是存储成xlsx触发
 		this.WriteXmlString = function(val)
 		{
+			console.log('axing WriteXmlString', val);
+			window.native.ConsoleLog('axing WriteXmlString', val);
 			var pCur = 0;
 			var pEnd = val.length;
 			while (pCur < pEnd)
@@ -936,6 +941,7 @@
 				this.WriteXmlCharCode(code);
 			}
 		};
+		//用于解码，把不符合xml的转义符转成xml的转义符
 		this.WriteXmlCharCode = function(code)
 		{
 			switch (code)

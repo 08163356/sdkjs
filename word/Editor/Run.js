@@ -1833,6 +1833,7 @@ ParaRun.prototype.GetLogicDocument = function()
 };
 
 // Добавляем элемент в позицию с сохранием в историю
+// 将元素添加到指定位置，并保存到历史记录中
 ParaRun.prototype.Add_ToContent = function(Pos, Item, UpdatePosition)
 {
 	if (this.GetTextForm() && this.GetTextForm().IsComb())
@@ -1848,6 +1849,8 @@ ParaRun.prototype.Add_ToContent = function(Pos, Item, UpdatePosition)
 
 	// Здесь проверка на возвожность добавления в историю стоит заранее для ускорения открытия файлов, чтобы
 	// не создавалось лишних классов
+	// 这里提前检查是否可以添加到历史记录，以加快文件打开速度，
+// 以避免创建多余的类。
 	if (AscCommon.History.CanAddChanges())
 		AscCommon.History.Add(new CChangesRunAddItem(this, Pos, [Item], true));
 

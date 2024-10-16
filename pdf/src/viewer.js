@@ -4666,6 +4666,7 @@
 			oMemory.Seek(nEndPos);
 
 			// пишем изображения
+			// 写入图像
 			oMemory.WriteLong(oMemory.images.length);
 			for (let i = 0; i < oMemory.images.length; i++) {
 				oMemory.WriteStringA(oMemory.images[i]);

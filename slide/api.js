@@ -2456,6 +2456,7 @@ background-repeat: no-repeat;\
 			if (t.forceSaveForm) {
 				t.forceSaveForm();
 			}
+			// 标记文档为未修改
 			// Выставляем, что документ не модифицирован
 			t.CheckChangedDocument();
 			t.canSave    = true;

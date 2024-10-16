@@ -3130,17 +3130,20 @@
 	};
 	Workbook.prototype._SerializeHistory = function(oMemory, item, aPointChanges) {
 		let data = this._SerializeHistoryItem(oMemory, item);
+		console.log("axing _SerializeHistory data", data);
 		if (data) {
 			aPointChanges.push(data);
 		}
 	};
 	Workbook.prototype.SerializeHistory = function(){
 		var aRes = [];
+		// 将接收数据之前的更改与接收后所得到的更改结合起来
 		//соединяем изменения, которые были до приема данных с теми, что получились после.
 
 		var t, j, length2;
 
 		// Пересчитываем позиции
+		// “重新计算位置。”
 		AscCommon.CollaborativeEditing.Refresh_DCChanges();
 
 		var aActions = this.aCollaborativeActions.concat(History.GetSerializeArray());
@@ -3152,6 +3155,7 @@
 				var aPointChanges = aActions[i];
 				for (j = 0, length2 = aPointChanges.length; j < length2; ++j) {
 					var item = aPointChanges[j];
+					console.log("axing SerializeHistory", item.bytes, item.bytes?item.bytes:oMemory.GetData())
 					if (item.bytes) {
 						aRes.push(item.bytes);
 					} else {
@@ -3406,6 +3410,7 @@
 	}
 	Workbook.prototype.DeserializeHistory = function(aChanges, fCallback, oColor){
 		var oThis = this;
+		// 保存接收数据之前的更改，因为之后的撤销/重做将被清空。
 		//сохраняем те изменения, которые были до приема данных, потому что дальше undo/redo будет очищено
 		this.aCollaborativeActions = this.aCollaborativeActions.concat(History.GetSerializeArray());
 		if(aChanges.length > 0)
@@ -14286,6 +14291,7 @@
 		return new UndoRedoData_CellValueData(formula, new AscCommonExcel.CCellValue(this), formulaRef);
 	};
 	Cell.prototype.setValueData = function(Val){
+		// 值通过 setValue 设置，以便重新计算公式
 		//значения устанавляваются через setValue, чтобы пересчитались формулы
 		if(null != Val.formula)
 			this.setFormula(Val.formula, null, Val.formulaRef);

@@ -138,6 +138,7 @@ var c_oAscError = Asc.c_oAscError;
 	};
 	spreadsheet_api.prototype.asc_Save = function (isNoUserSave, isSaveAs, isResaveAttack, options)
 	{
+		console.log("axing asc_Save", isNoUserSave, isSaveAs, isResaveAttack, options);
 		if (this.isFrameEditor() || AscCommon.c_oAscAdvancedOptionsAction.None !== this.advancedOptionsAction)
 			return;
 

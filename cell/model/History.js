@@ -393,20 +393,23 @@ function CHistory()
     this.TurnOffHistory = 0;
 	this.RegisterClasses = 0;
     this.Transaction = 0;
+	// // 如果为 true，所有添加的更改将不参与协同编辑。
     this.LocalChange = false;//если true все добавленный изменения не пойдут в совместное редактирование.
 	this.RecIndex = -1;
 	this.lastDrawingObjects = null;
 	this.LastState = null;
+	// 用于跟踪在没有点的情况下添加更改的错误的标志：Create_NewPoint->Add->Save_Changes->Add
 	this.CanNotAddChanges = false;//флаг для отслеживания ошибок добавления изменений без точки:Create_NewPoint->Add->Save_Changes->Add
 
-	this.SavedIndex = null;			// Номер точки отката, на которой произошло последнее сохранение
-  this.ForceSave  = false;       // Нужно сохранение, случается, когда у нас точка SavedIndex смещается из-за объединения точек, и мы делаем Undo
+	this.SavedIndex = null;			// Номер точки отката, на которой произошло последнее сохранение:最近一次保存发生的回滚点编号
+  this.ForceSave  = false;       // Нужно сохранение, случается, когда у нас точка SavedIndex смещается из-за объединения точек, и мы делаем Undo:需要保存的情况，发生在由于合并点导致 SavedIndex 点位移时，我们进行撤销
 
   // Параметры для специального сохранения для локальной версии редактора
+	// 用于本地版本编辑器的特殊保存参数
   this.UserSaveMode   = false;
-  this.UserSavedIndex = null;  // Номер точки, на которой произошло последнее сохранение пользователем (не автосохранение)
+  this.UserSavedIndex = null;  // Номер точки, на которой произошло последнее сохранение пользователем (не автосохранение):用户最近一次保存发生的点编号（非自动保存）
 
-	this.PosInCurPoint = null; // position to roll back changes within the current point
+	this.PosInCurPoint = null; // position to roll back changes within the current point:在当前点内回滚更改的位置
 }
 CHistory.prototype.init = function(workbook) {
 	this.workbook = workbook;
@@ -541,6 +544,8 @@ CHistory.prototype.RedoAdd = function(oRedoObjectParam, Class, Type, sheetid, ra
 		bNeedOff = true;
 	}
 	//if(Class)
+	console.log('axing RedoAdd class = '+ JSON.stringify(Class)+'\ntype = ' +Type+'\nsheetid= '+ sheetid+'\nrange='+ JSON.stringify(range)+'\ndata='+ JSON.stringify(Data)+'\nlocalChange = '+ LocalChange);
+	AscCommon.sendClientLog("debug", 'axing RedoAdd class = '+ JSON.stringify(Class)+'\ntype = ' +Type+'\nsheetid= '+ sheetid+'\nrange='+ JSON.stringify(range)+'\ndata='+ JSON.stringify(Data)+'\nlocalChange = '+ LocalChange);
 	this.Add(Class, Type, sheetid, range, Data, LocalChange);
 	if(bNeedOff)
 		this.TurnOff();
@@ -1029,6 +1034,9 @@ CHistory.prototype.Create_NewPoint = function()
 // Регистрируем новое изменение:
 // Class - объект, в котором оно произошло
 // Data  - сами изменения
+	// 注册新更改：
+// Class - 发生更改的对象
+// Data  - 更改的具体内容
 CHistory.prototype.Add = function(Class, Type, sheetid, range, Data, LocalChange)
 {
 	if (!this.CanAddChanges())

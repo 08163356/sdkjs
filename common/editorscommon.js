@@ -11160,7 +11160,9 @@
         this.cryptoMode = 0; // start crypto mode
 		this.isChartEditor = false;
 
+		// 是否有任何请求来解密数据（是否有外部的更改）
         this.isExistDecryptedChanges = false; // был ли хоть один запрос на расшифровку данных (были ли чужие изменения)
+
 
         this.cryptoPrefix = (window["AscDesktopEditor"] && window["AscDesktopEditor"]["GetEncryptedHeader"]) ? window["AscDesktopEditor"]["GetEncryptedHeader"]() : "ENCRYPTED;";
         this.cryptoPrefixLen = this.cryptoPrefix.length;
@@ -11291,6 +11293,7 @@
 
         this.sendChanges = function(sender, data, type, options)
         {
+			console.log("axing sendChanges start", this.arrData, data, AscCommon.EncryptionMessageType.Encrypt, type, options, sender)
             if (!this.isNeedCrypt())
             {
                 if (AscCommon.EncryptionMessageType.Encrypt == type)
@@ -11304,6 +11307,7 @@
                         this.onDecodeError();
                         return;
                     }
+					// 调用这个地方DocsCoApi.prototype._onSaveChanges
                     sender._onSaveChanges(data, true);
                 }
                 return;
@@ -11324,7 +11328,10 @@
 				// но так как он сделан на таймере - то просто он не успел отработать.
 				// тут запускаем единственное изменение - это и есть как бы next.
 				// убиваем таймер
-
+				// 在 receiveChanges 上的数据被删除时调用了 send - 然后启动了 nextChanges。
+// 但由于它是基于定时器的 - 所以可能没有及时执行。
+// 这里我们启动唯一的更改 - 这就像是 next。
+// 终止定时器。
 				clearTimeout(this.nextChangesTimeoutId);
 				this.nextChangesTimeoutId = -1;
 			}
@@ -11345,10 +11352,12 @@
                 else
                     window.g_asc_plugins.sendToEncryption({ "type" : "decryptData", "data" : this.arrData[0].data["changes"] });
             }
+			console.log("axing sendChanges end ", this.arrData);
         };
 
         this.receiveChanges = function(obj)
         {
+			console.log("axing receiveChanges", obj["data"]);
         	var data = obj["data"];
         	var check = obj["check"];
         	if (!check)

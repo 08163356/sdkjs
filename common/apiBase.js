@@ -104,6 +104,7 @@
 		this.LongActionCallbacksParams = [];
 
 		// AutoSave
+		// 自动保存间隔（0 - 表示没有自动保存）以毫秒为单位
 		this.autoSaveGap = 0;					// Интервал автосохранения (0 - означает, что автосохранения нет) в милесекундах
 		this.lastSaveTime = null;				// Время последнего сохранения
 		this.autoSaveGapFast = 2000;			// Интервал быстрого автосохранения (когда человек один) - 2 сек.
@@ -158,8 +159,9 @@
 		this.isApplyChangesOnOpenEnabled = true;
 		this.isProtectionSupport = true;
 		this.isAnonymousSupport = true;
-
+// 该标志用于防止在上一次保存未完成之前进行保存
 		this.canSave    = true;        // Флаг нужен чтобы не происходило сохранение пока не завершится предыдущее сохранение
+		// 标志，用于控制保存是否由用户进行（默认值为否）
 		this.IsUserSave = false;    // Флаг, контролирующий сохранение было сделано пользователем или нет (по умолчанию - нет)
 		this.isForceSaveOnUserSave = false;
         this.forceSaveButtonTimeout = null;
@@ -168,6 +170,7 @@
 		this.forceSaveForm = null;
 		this.disconnectOnSave = null;
 		this.disconnectRestrictions = null;//to restore restrictions after disconnect
+		// 该标志用于指示此保存是由于在协作中请求撤销而产生的
 		this.forceSaveUndoRequest = false; // Флаг нужен, чтобы мы знали, что данное сохранение пришло по запросу Undo в совместке
 
 		// Version History
@@ -207,7 +210,7 @@
         this.copyOutEnabled = true;
 
 		this.watermarkDraw = null;
-
+//可能与在执行宏后保存文件或数据
 		this.SaveAfterMacros = false;
 
 		// Spell Checking
@@ -1268,6 +1271,7 @@
 	};
 	baseEditorsApi.prototype.saveFromChanges = function(data, timeout, callback) {
 		var t = this;
+		console.log("axing saveFromChanges data = ", data)
 		var fAfterSaveChanges = function() {
 			t.forceSaveForm = null;
 			if (!t.CoAuthoringApi.callPRC(data, timeout, callback)) {
@@ -1322,6 +1326,8 @@
 		var nState;
 		if (false == e["saveLock"]) {
 			if (this.isLongAction()) {
+				// 我们此时无法保存，因为我们进入了一个锁定保存的状态，并在收到响应之前点击了插入。
+				// 需要解除保存的锁定。
 				// Мы не можем в этот момент сохранять, т.к. попали в ситуацию, когда мы залочили сохранение и успели нажать вставку до ответа
 				// Нужно снять lock с сохранения
 				this.CoAuthoringApi.onUnSaveLock = function () {
@@ -2651,6 +2657,7 @@
 			if (this.asc_isDocumentCanSave() || AscCommon.History.Have_Changes() || this._haveOtherChanges() ||
 				this.canUnlockDocument || this.forceSaveUndoRequest) {
 				if (this._prepareSave(isIdle)) {
+					// 不允许用户保存，直到保存完成（如果已经开始）
 					// Не даем пользователю сохранять, пока не закончится сохранение (если оно началось)
 					this.canSave = false;
 					this.CoAuthoringApi.askSaveChanges(function (e) {

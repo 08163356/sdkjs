@@ -1787,6 +1787,7 @@
 			t.sendEvent("asc_onDocumentModifiedChanged");
 		};
 		/**
+		 * 关于与服务器断开连接的事件。
 		 * Event об отсоединении от сервера
 		 * @param {jQuery} e  event об отсоединении с причиной
 		 * @param {opt_closeCode: AscCommon.c_oCloseCode.drop} opt_closeCode

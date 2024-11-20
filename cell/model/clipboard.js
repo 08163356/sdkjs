@@ -432,7 +432,7 @@
 			switch (_format) {
 				case AscCommon.c_oAscClipboardDataFormat.HtmlElement: {
 					if (wb.getCellEditMode()) {
-						//fragments = пока только для плагина вставка символов
+						//fragments = пока только для плагина вставка символов  目前仅适用于字符插入插件。
 						var fragments;
 						if (window['AscCommon'].g_clipboardBase.bSaveFormat) {
 							//проверяем иероглифы внутри
@@ -444,7 +444,11 @@
 							ws._loadFonts(newFonts, function () {
 								cellEditor.paste(pasteFragments);
 								window['AscCommon'].g_specialPasteHelper.Paste_Process_End();
-
+								// TODO 需要重新审视！尽可能从菜单中调用！
+								// 在使用单元格编辑器作为 HF 编辑器时
+								// 在 onLongActionEnd（菜单函数）中不会调用 asc_enableKeyEvents(true)
+								// 因此 enableKeyEvents 保持为 false
+								// 所以必须在这里调用，等字体加载完成后。
 								//TODO пересмотреть! по возможности вызывать из меню!
 								//при использовании рекдактора ячейки в качестве редактора HF
 								//в функции onLongActionEnd(ф-я меню) не вызывается asc_enableKeyEvents(true)

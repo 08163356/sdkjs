@@ -102,7 +102,7 @@
 
 		this.DivOnCopyHtmlPresent = false;
 		this.DivOnCopyText = "";
-
+		// 为了插入内容，例如，从插件中添加文本到形状时，需要保持格式。
 		this.bSaveFormat = false; //для вставки, допустим, из плагина необходимо чтобы при добавлении текста в шейп сохранялось форматирование
 		this.bCut = false;
 		this.forceCutSelection = null;
@@ -227,7 +227,6 @@
 			this.PasteFlag = true;
 			this.Api.incrementCounterLongAction();
 			this.pastedFrom = null;
-
 			if (this.IsNeedDivOnPaste)
 			{
 				window.setTimeout(function()
@@ -247,7 +246,7 @@
 					return false;
 
 				//window['AscCommon'].g_clipboardBase.rtf = this.ClosureParams.getData("text/rtf");
-
+				console.log("axing _private_onpaste", _clipboard, _clipboard.getData, this.ClosureParams.getData("text/plain"), this.ClosureParams.getData("text/html"));
 				var isDisableRawPaste = false;
 				if (true === AscCommon["isDisableRawPaste"])
 				{
@@ -267,6 +266,7 @@
 				var _html_format = isDisableRawPaste ? "" : this.ClosureParams.getData("text/html");
 				if (_html_format && _html_format != "")
 				{
+
 					var nIndex = _html_format.indexOf("</html>");
 					if (-1 != nIndex)
 						_html_format = _html_format.substring(0, nIndex + "</html>".length);
@@ -1072,6 +1072,7 @@
 			if (!_ret)
 			{
 				//　копирования не было
+				// 复制没有发生
 				this.LastCopyBinary = null;
 				this.checkCopy(AscCommon.c_oAscClipboardDataFormat.Text | AscCommon.c_oAscClipboardDataFormat.Html | AscCommon.c_oAscClipboardDataFormat.Internal);
 			}
@@ -1242,8 +1243,9 @@
 
 		//параметры специальной вставки из меню.используется класс для EXCEL СSpecialPasteProps. чтобы не протаскивать через все вызываемые функции, добавил это свойство
 		this.specialPasteProps = null;
-
+		// 是否需要显示特殊插入按钮
 		this.showSpecialPasteButton = false;//нужно показывать или нет кнопку специальной вставки
+		// 特殊插入按钮的参数 - 位置。需要在滚动文档、改变缩放等情况下进行调整。
 		this.buttonInfo = new Asc.SpecialPasteShowOptions();//параметры кнопки специальной вставки - позиция. нужно при прокрутке документа, изменения масштаба и тп
 
 		this.specialPasteStart = false;//если true, то в данный момент выполняется специальная вставка
@@ -1286,7 +1288,7 @@
 		Special_Paste_Start : function()
 		{
 			this.specialPasteStart = true;
-
+			// 为了在插入时能够使用编译后的样式
 			//для того, чтобы были доступны скомпилированые стили во время вставки
 			if (g_clipboardBase.CommonIframe && g_clipboardBase.CommonIframe.style.display != "block")
 			{
@@ -1372,7 +1374,7 @@
 		{
 			if (!this.Api || this.doNotShowButton || !this.visiblePasteButton)
 				return;
-
+			// 在快速协作编辑时，禁用特殊插入的功能。
 			//при быстром совместном редактировании отключаем возможность специальной вставки
 			if(this.CheckFastCoEditing())
 			{

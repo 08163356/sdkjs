@@ -1,5 +1,5 @@
 /*
- * (c) Copyright Ascensio System SIA 2010-2023
+ * (c) Copyright Ascensio System SIA 2010-2024
  *
  * This program is a free software product. You can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License (AGPL)
@@ -1044,6 +1044,15 @@
 
 		Button_Copy : function()
 		{
+			if (window["AscDesktopEditor"])
+			{
+				window["asc_desktop_copypaste"](this.Api, "Copy");
+				return true;
+			}
+
+			if (window["NATIVE_EDITOR_ENJINE"])
+				return false;
+			
 			if (this.isUseNewCopy())
 			{
 				if (this.Button_Copy_New())
@@ -1081,6 +1090,15 @@
 
 		Button_Cut : function()
 		{
+			if (window["AscDesktopEditor"])
+			{
+				window["asc_desktop_copypaste"](this.Api, "Cut");
+				return true;
+			}
+
+			if (window["NATIVE_EDITOR_ENJINE"])
+				return false;
+			
 			if (this.isUseNewCopy())
 			{
 				if (this.Button_Copy_New(true))
@@ -1121,6 +1139,15 @@
 
 		Button_Paste : function()
 		{
+			if (window["AscDesktopEditor"])
+			{
+				window["asc_desktop_copypaste"](this.Api, "Paste");
+				return true;
+			}
+
+			if (window["NATIVE_EDITOR_ENJINE"])
+				return false;
+			
 			if (this.isUseNewPaste())
 			{
 				if (this.Button_Paste_New())
@@ -1518,6 +1545,4 @@ window["asc_desktop_copypaste"] = function(_api, _method)
 	if (!bIsFocus)
 		_api.asc_enableKeyEvents(true);
 	window["AscDesktopEditor"][_method]();
-	if (!bIsFocus)
-		_api.asc_enableKeyEvents(false);
 };

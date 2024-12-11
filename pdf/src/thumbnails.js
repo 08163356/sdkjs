@@ -1,5 +1,5 @@
 /*
- * (c) Copyright Ascensio System SIA 2010-2023
+ * (c) Copyright Ascensio System SIA 2010-2024
  *
  * This program is a free software product. You can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License (AGPL)
@@ -235,7 +235,9 @@
             var pH = (drPage.page.height * zoom) >> 0;
             if (isLandscape)
             {
-                [pW, pH] = [pH, pW];
+                let tmp = pW;
+                pW = pH;
+                pH = tmp;
             }
 
             var curPageHeight = pH + PageStyle.numberFontOffset + PageStyle.numberFontHeight;
@@ -480,7 +482,7 @@
     {
 		let pdfDoc = this.viewer.getPDFDoc();
 	
-		if (pdfDoc.fontLoader.isWorking())
+		if (pdfDoc.fontLoader.isWorking() || AscCommon.CollaborativeEditing.waitingImagesForLoad)
 			return true;
 		
         var isNeedTasks = false;

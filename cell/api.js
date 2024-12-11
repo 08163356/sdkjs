@@ -365,10 +365,12 @@ var editor;
     this.initGlobalObjects(this.wbModel);
 	  AscFonts.IsCheckSymbols = true;
 	  if(this.isOpenOOXInBrowser) {
+          console.log("axing isOpenOOXInBrowser", this.isOpenOOXInBrowser)
 		  this.openingEnd.xlsx = true;
 		  this.openingEnd.xlsxStart = true;
 		  this.openingEnd.data = data;
 	  } else {
+          console.log("axing is not OpenOOXInBrowser", this.isOpenOOXInBrowser)
 		  var oBinaryFileReader = new AscCommonExcel.BinaryFileReader();
 		  oBinaryFileReader.Read(data, this.wbModel);
 	  }

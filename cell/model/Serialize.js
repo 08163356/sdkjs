@@ -11307,7 +11307,7 @@
                     res = (new Binary_SharedStringTableReader(this.stream, wb, aSharedStrings)).Read();
             }
 
-            //aCellXfs - внутри уже не нужна, поскольку вынес функцию InitStyleManager в InitOpenManager
+            //aCellXfs - внутри уже не нужна, поскольку вынес функцию InitStyleManager в InitOpenManager  “aCellXfs - 里面已经不需要了，因为函数已被提取。”
 			this.InitOpenManager.oReadResult.stylesTableReader = new Binary_StylesTableReader(this.stream, wb/*, aCellXfs, this.InitOpenManager.copyPasteObj.isCopyPaste*/)
             if(null != nStyleTableOffset)
             {
@@ -11337,12 +11337,14 @@
 
 
 			var bwtr = new Binary_WorksheetTableReader(this.stream, this.InitOpenManager, wb, aSharedStrings, aCellXfs, oMediaArray, personList);
+            console.log("axing test aWorksheets",aSeekTable, wb.aWorksheets);
 			if(null != nWorkbookTableOffset)
 			{
 				res = this.stream.Seek(nWorkbookTableOffset);
 				if(c_oSerConstants.ReadOk == res)
 					res = (new Binary_WorkbookTableReader(this.stream, this.InitOpenManager, wb, bwtr)).Read();
 			}
+            // 这地方读取完成一个之后是否可以先暂停，进入其他流程？
 
 
 
@@ -11351,6 +11353,7 @@
             {
                 for(var i = 0; i < aSeekTable.length; ++i)
                 {
+                    // 这个地方第一张表格加载完成后是否可以先暂停，以后再执行后续表格的加载
                     var seek = aSeekTable[i];
                     var mtiType = seek.type;
                     var mtiOffBits = seek.offset;
